@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/d_pan?serverTimezone=Asia/Shanghai
+    username: root
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: d-pan-api
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
+mybatis:
+  type-aliases-package: com.zym.dpan.**.entity
+  mapper-locations: classpath:/mapper/**/*.xml
+server:
+  port: 7002
+logging:
+  level:
+    com.zym.dpan: info
