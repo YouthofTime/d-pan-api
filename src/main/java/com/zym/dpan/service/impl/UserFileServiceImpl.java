@@ -36,7 +36,6 @@ public class UserFileServiceImpl implements UserFileService {
         }
         // 3.上传过：保存本次文件上传记录
         UserFileEntity userFileEntity = new UserFileEntity();
-        userFileEntity.setDefaultValue();
         // filename和fileEntity中的filename是不一样的
         BeanUtils.copyProperties(fileSecUploadVo,userFileEntity);
         userFileEntity.setFileSizeDesc(fileEntity.getFileSizeDesc());

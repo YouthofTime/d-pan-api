@@ -4,6 +4,10 @@ package com.zym.dpan.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.zym.dpan.constant.UserFileEnum;
+import com.zym.dpan.utils.IdGenerator;
+import com.zym.dpan.utils.UserIdUtil;
 import lombok.Data;
 
 /**
@@ -47,5 +51,13 @@ public class FileChunkEntity implements Serializable {
 	 * 创建时间
 	 */
 	private Date createTime;
+
+	public FileChunkEntity(){
+		Long userId = UserIdUtil.get();
+		this.setCreateTime(new Date());
+		this.setCreateUser(userId);
+		// TODO 设置过期时间：当前日期的下一天
+		//this.setExpirationTime();
+	}
 
 }

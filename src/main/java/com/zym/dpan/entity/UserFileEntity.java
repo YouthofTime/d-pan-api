@@ -73,7 +73,7 @@ public class UserFileEntity implements Serializable {
 	 */
 	private Date updateTime;
 
-	public void setDefaultValue(){
+	public UserFileEntity(){
 		Long userId = UserIdUtil.get();
 		this.setCreateTime(new Date());
 		this.setUpdateTime(new Date());

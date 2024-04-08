@@ -1,7 +1,12 @@
 package com.zym.dpan.dao;
 
 
+import com.zym.dpan.entity.FileChunkEntity;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 文件分片信息表
@@ -10,7 +15,11 @@ import org.springframework.stereotype.Repository;
  * @email zym@gmail.com
  * @date 2024-04-07 17:20:22
  */
-@Repository(value = "fileChunkDao")
+@Mapper
 public interface FileChunkDao{
-	
+	List<FileChunkEntity> selectAllByIdentifier(String identifier);
+
+	int insert(FileChunkEntity fileChunkEntity);
+
+	int selectUploadedChunkCount(@Param("identifier") String identifier, @Param("userId") Long userId);
 }

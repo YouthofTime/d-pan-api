@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 @Service("fileService")
 public class FileServiceImpl implements FileService {
     @Autowired
-    @Qualifier(value = "fileDao")
     FileDao fileDao;
     @Override
     public FileEntity selectByIdentifier(String identifier) {

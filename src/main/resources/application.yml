@@ -19,4 +19,4 @@ server:
   port: 7002
 logging:
   level:
-    com.zym.dpan: info
+    com.zym.dpan: debug

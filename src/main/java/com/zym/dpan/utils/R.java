@@ -22,14 +22,15 @@ public class R extends HashMap<String,Object> {
     public static final long serialVersionUID = 1;
 
     public R(){
-        put("code",0);
-        put("msg","success");
+        put("status",0);
+        put("message","success");
+        put("data",new HashMap<>());
     }
 
     public static R error(int code,String msg){
         R r = new R();
-        r.put("code",code);
-        r.put("msg",msg);
+        r.put("status",code);
+        r.put("message",msg);
         return r;
     }
 
@@ -49,7 +50,7 @@ public class R extends HashMap<String,Object> {
 
     public static R ok(String msg){
         R r = new R();
-        r.put("msg",msg);
+        r.put("message",msg);
         return r;
     }
 
@@ -57,13 +58,19 @@ public class R extends HashMap<String,Object> {
         return new R();
     }
 
+    public R data(String key,Object value){
+        Map<String,Object> map = new HashMap<>();
+        map.put(key,value);
+        put("data",map);
+        return this;
+    }
     @Override
     public R put(String key, Object value){
         super.put(key,value);
         return this;
     }
 
-    public Integer getCode(){return (Integer) this.get("code");}
+    public Integer getCode(){return (Integer) this.get("status");}
 
 
 

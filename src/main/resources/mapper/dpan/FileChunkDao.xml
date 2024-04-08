@@ -14,5 +14,33 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id, identifier, real_path, chunk_number, expiration_time, create_user, create_time
+    </sql>
+
+    <select id="selectAllByIdentifier" resultMap="fileChunkMap">
+        select
+            <include refid="Base_Column_List"/>
+        FROM
+            d_pan_file_chunk
+        where identifier= #{identifier}
+    </select>
+
+    <insert id="insert" parameterType="com.zym.dpan.entity.FileChunkEntity">
+        insert into r_pan_file_chunk (id, identifier, real_path,
+                                      chunk_number, expiration_time, create_user,
+                                      create_time)
+        values (#{id}, #{identifier}, #{realPath},
+                #{chunkNumber}, #{expirationTime}, #{createUser},
+                #{createTime})
+    </insert>
+
+    <select id="selectUploadedChunkCount" resultType="integer">
+        select
+            COUNT(DISTINCT chunk_number)
+        from
+            d_pan_file_chunk
+        where identifier= #{identifier} AND creat_user=#{userId}
+    </select>
 
 </mapper>
