@@ -1,10 +1,11 @@
 package com.zym.dpan.service.impl;
+import com.zym.dpan.constant.FileConstant;
 import com.zym.dpan.dao.UserFileDao;
 import com.zym.dpan.entity.FileEntity;
 import com.zym.dpan.entity.UserFileEntity;
-import com.zym.dpan.exception.RRException;
 import com.zym.dpan.service.FileService;
 import com.zym.dpan.service.UserFileService;
+import com.zym.dpan.utils.FileTypeClassifier;
 import com.zym.dpan.vo.FileSecUploadVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,11 @@ public class UserFileServiceImpl implements UserFileService {
         BeanUtils.copyProperties(fileSecUploadVo,userFileEntity);
         userFileEntity.setFileSizeDesc(fileEntity.getFileSizeDesc());
         userFileEntity.setRealFileId(fileEntity.getFileId());
-        // TODO:文件类型设置
-        saveUserFile(userFileEntity);
+        // 文件类型设置
+        FileConstant.FileType fileType = FileTypeClassifier.classifyFileType(fileSecUploadVo.getFilename());
+        userFileEntity.setFileType(fileType.getCode());
+        userFileDao.insert(userFileEntity);
         return true;
-    }
-
-    public void saveUserFile(UserFileEntity userFileEntity){
-        if(userFileDao.insert(userFileEntity)!=1){
-            throw new RRException("保存用户文件信息失败");
-        };
     }
 
 }

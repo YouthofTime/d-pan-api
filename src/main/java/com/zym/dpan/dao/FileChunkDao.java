@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Mapper
 public interface FileChunkDao{
-	List<FileChunkEntity> selectAllByIdentifier(String identifier);
+	List<FileChunkEntity> selectAllByIdentifier(String identifier,Long userId);
 
 	int insert(FileChunkEntity fileChunkEntity);
 

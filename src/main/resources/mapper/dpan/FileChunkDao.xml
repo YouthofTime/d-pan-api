@@ -21,9 +21,13 @@
     <select id="selectAllByIdentifier" resultMap="fileChunkMap">
         select
             <include refid="Base_Column_List"/>
-        FROM
+        from
             d_pan_file_chunk
-        where identifier= #{identifier}
+        where
+            identifier= #{identifier}
+        and
+            create_user = #{userId}
+
     </select>
 
     <insert id="insert" parameterType="com.zym.dpan.entity.FileChunkEntity">

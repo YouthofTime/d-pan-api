@@ -13,7 +13,7 @@ import java.util.List;
  * @Version 1.0
  */
 public interface FileChunkService {
-    List<Integer> getUploadedChunkNumbers(String identifier);
+    List<Integer> getUploadedChunkNumbers(String identifier,Long userId);
 
     Integer saveWithChunk(FileChunkUploadVo fileChunkUploadVo);
 }

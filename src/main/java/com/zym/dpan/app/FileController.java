@@ -3,6 +3,7 @@ package com.zym.dpan.app;
 import com.zym.dpan.service.FileChunkService;
 import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.utils.R;
+import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.FileChunkUploadVo;
 import com.zym.dpan.vo.FileSecUploadVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class FileController {
      */
     @RequestMapping("/chunk-upload/{identifier}")
     public R checkUploadWithChunk(@PathVariable("identifier") @Valid @NotBlank(message = "文件唯一标识不能为空") String identifier){
-        List<Integer> uploadedChunks =  fileChunkService.getUploadedChunkNumbers(identifier);
+        List<Integer> uploadedChunks =  fileChunkService.getUploadedChunkNumbers(identifier, UserIdUtil.get());
         return R.ok().data("uploadedChunks",uploadedChunks);
     }
 

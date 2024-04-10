@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.zym.dpan.constant.UserFileEnum;
+import com.zym.dpan.utils.Constant;
+import com.zym.dpan.utils.DateUtil;
 import com.zym.dpan.utils.IdGenerator;
 import com.zym.dpan.utils.UserIdUtil;
 import lombok.Data;
@@ -54,10 +56,10 @@ public class FileChunkEntity implements Serializable {
 
 	public FileChunkEntity(){
 		Long userId = UserIdUtil.get();
-		this.setCreateTime(new Date());
-		this.setCreateUser(userId);
-		// TODO 设置过期时间：当前日期的下一天
-		//this.setExpirationTime();
+		setCreateTime(new Date());
+		setCreateUser(userId);
+		// 设置过期时间：当前日期的下一天
+		setExpirationTime(DateUtil.afterDays(Constant.CHUNK_EXPIRATION_DAYS));
 	}
 
 }
