@@ -31,7 +31,7 @@
     </select>
 
     <insert id="insert" parameterType="com.zym.dpan.entity.FileChunkEntity">
-        insert into r_pan_file_chunk (id, identifier, real_path,
+        insert into d_pan_file_chunk (id, identifier, real_path,
                                       chunk_number, expiration_time, create_user,
                                       create_time)
         values (#{id}, #{identifier}, #{realPath},
@@ -47,4 +47,11 @@
         where identifier= #{identifier} AND creat_user=#{userId}
     </select>
 
+    <delete id="deleteByIdentifierAndUserId">
+        DELETE FROM
+            d_pan_file_chunk
+        WHERE
+            identifier = #{identifier}
+        AND create_user = #{userId}
+    </delete>
 </mapper>

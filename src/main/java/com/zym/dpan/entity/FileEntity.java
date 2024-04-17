@@ -4,6 +4,9 @@ package com.zym.dpan.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.zym.dpan.utils.IdGenerator;
+import com.zym.dpan.utils.UserIdUtil;
 import lombok.Data;
 
 /**
@@ -57,5 +60,11 @@ public class FileEntity implements Serializable {
 	 * 创建时间
 	 */
 	private Date createTime;
+
+	public FileEntity(){
+		fileId = IdGenerator.nextId();
+		createUser = UserIdUtil.get();
+		createTime = new Date();
+	}
 
 }

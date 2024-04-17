@@ -1,5 +1,6 @@
 package com.zym.dpan.service;
 
+import com.zym.dpan.vo.FileChunkMergeVo;
 import com.zym.dpan.vo.FileChunkUploadVo;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface FileChunkService {
     List<Integer> getUploadedChunkNumbers(String identifier,Long userId);
 
     Integer saveWithChunk(FileChunkUploadVo fileChunkUploadVo);
+
+    void mergeWithChunks(FileChunkMergeVo fileChunkMergeVo);
 }

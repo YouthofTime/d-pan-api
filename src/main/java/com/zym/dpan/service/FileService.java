@@ -1,6 +1,7 @@
 package com.zym.dpan.service;
 
 import com.zym.dpan.entity.FileEntity;
+import com.zym.dpan.vo.FileChunkMergeVo;
 
 /**
  * ClassName: FileService
@@ -12,4 +13,6 @@ import com.zym.dpan.entity.FileEntity;
  */
 public interface FileService {
     FileEntity selectByIdentifier(String identifier);
+
+    FileEntity mergeWithChunks(FileChunkMergeVo fileChunkMergeVo);
 }

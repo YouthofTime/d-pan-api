@@ -22,4 +22,6 @@ public interface FileChunkDao{
 	int insert(FileChunkEntity fileChunkEntity);
 
 	int selectUploadedChunkCount(@Param("identifier") String identifier, @Param("userId") Long userId);
+
+    void deleteByIdentifierAndUserId(String identifier, Long userId);
 }

@@ -4,6 +4,7 @@ import com.zym.dpan.service.FileChunkService;
 import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.utils.R;
 import com.zym.dpan.utils.UserIdUtil;
+import com.zym.dpan.vo.FileChunkMergeVo;
 import com.zym.dpan.vo.FileChunkUploadVo;
 import com.zym.dpan.vo.FileSecUploadVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,11 @@ public class FileController {
     public R uploadWithChunk(@Validated FileChunkUploadVo fileChunkUploadVo){
         Integer mergeFlag = fileChunkService.saveWithChunk(fileChunkUploadVo);
         return R.ok().data("mergeFlag",mergeFlag);
+    }
+
+    @PostMapping("/merge")
+    public R mergeWithChunks(@Validated FileChunkMergeVo fileChunkMergeVo){
+        fileChunkService.mergeWithChunks(fileChunkMergeVo);
+        return R.ok().data();
     }
 }

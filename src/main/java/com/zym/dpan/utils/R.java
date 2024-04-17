@@ -64,6 +64,12 @@ public class R extends HashMap<String,Object> {
         put("data",map);
         return this;
     }
+
+    public R data(){
+        Map<String,Object> map = new HashMap<>();
+        put("data",map);
+        return this;
+    }
     @Override
     public R put(String key, Object value){
         super.put(key,value);

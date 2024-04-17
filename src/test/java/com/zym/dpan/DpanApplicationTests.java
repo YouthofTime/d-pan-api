@@ -31,12 +31,17 @@ public class DpanApplicationTests {
 	@Test
 	public void testFileType(){
 		String filename = "example.7z";
+//		filename = "23";
 		System.out.println("File name:"+filename);
 		String fileType = "";
 		Tika tika = new Tika();
 
 		fileType = tika.detect(filename);
 		System.out.println("File type:"+fileType);
+		Object[] objects = new Object[4];
+		objects[0]=1;
+		objects[1]="2";
+		System.out.println(objects[0]+""+objects[1]);
 	}
 
 }

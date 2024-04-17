@@ -14,4 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository(value = "fileDao")
 public interface FileDao{
     FileEntity selectByIdentifier(String identifier);
+
+    int insert(FileEntity fileEntity);
 }

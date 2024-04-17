@@ -2,14 +2,16 @@ package com.zym.dpan.service.impl;
 
 import com.zym.dpan.constant.FileConstant;
 import com.zym.dpan.dao.FileChunkDao;
+import com.zym.dpan.dao.UserFileDao;
 import com.zym.dpan.entity.FileChunkEntity;
+import com.zym.dpan.entity.FileEntity;
+import com.zym.dpan.entity.UserFileEntity;
 import com.zym.dpan.exception.RRException;
 import com.zym.dpan.service.FileChunkService;
+import com.zym.dpan.service.FileService;
 import com.zym.dpan.storage.StorageProcessorSelector;
-import com.zym.dpan.utils.Constant;
-import com.zym.dpan.utils.FileUtil;
-import com.zym.dpan.utils.RedisKeyGenerator;
-import com.zym.dpan.utils.UserIdUtil;
+import com.zym.dpan.utils.*;
+import com.zym.dpan.vo.FileChunkMergeVo;
 import com.zym.dpan.vo.FileChunkUploadVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,10 @@ import java.util.stream.Collectors;
 public class FileChunkServiceImpl implements FileChunkService {
     @Autowired
     FileChunkDao fileChunkDao;
+    @Autowired
+    UserFileDao userFileDao;
+    @Autowired
+    FileService fileService;
     @Autowired
     StorageProcessorSelector storageProcessorSelector;
     @Autowired
@@ -77,6 +83,20 @@ public class FileChunkServiceImpl implements FileChunkService {
             mergeFlag = Constant.ChunkMergeFlagEnum.READY.getCode();
         }
         return mergeFlag;
+    }
+
+    @Override
+    public void mergeWithChunks(FileChunkMergeVo fileChunkMergeVo) {
+        // 上传文件并保存文件信息
+        FileEntity fileEntity = fileService.mergeWithChunks(fileChunkMergeVo);
+        // 保存用户文件信息
+        UserFileEntity userFileEntity = new UserFileEntity();
+        BeanUtils.copyProperties(fileChunkMergeVo,userFileEntity);
+        userFileEntity.setRealFileId(fileEntity.getFileId());
+        userFileEntity.setFileSizeDesc(fileEntity.getFileSizeDesc());
+        Integer fileType = FileTypeClassifier.classifyFileType(fileChunkMergeVo.getFilename()).getCode();
+        userFileEntity.setFileType(fileType);
+        userFileDao.insert(userFileEntity);
     }
 
 }

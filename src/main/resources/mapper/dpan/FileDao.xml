@@ -30,4 +30,14 @@
             identifier= #{identifier}
     </select>
 
+    <insert id="insert" parameterType="com.zym.dpan.entity.FileEntity">
+        insert into d_pan_file (file_id, filename, real_path,
+                                file_size, file_size_desc, file_suffix,
+                                file_preview_content_type, identifier, create_user, create_time)
+        values (#{fileId}, #{filename}, #{realPath},
+                #{fileSize}, #{fileSizeDesc}, #{fileSuffix},
+                #{filePreviewContentType}, #{identifier}, #{createUser},
+                #{createTime})
+    </insert>
+
 </mapper>
