@@ -1,6 +1,7 @@
 package com.zym.dpan.app;
 
 import com.zym.dpan.service.FileChunkService;
+import com.zym.dpan.service.FileService;
 import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.utils.R;
 import com.zym.dpan.utils.UserIdUtil;
@@ -11,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -32,6 +35,9 @@ public class FileController {
 
     @Autowired
     FileChunkService fileChunkService;
+
+    @Autowired
+    FileService fileService;
 
     /**
      * 秒级上传：物理文件存在，上传一份用户文件记录
@@ -67,5 +73,10 @@ public class FileController {
     public R mergeWithChunks(@Validated FileChunkMergeVo fileChunkMergeVo){
         fileChunkService.mergeWithChunks(fileChunkMergeVo);
         return R.ok().data();
+    }
+
+    @PostMapping("/download")
+    public void download(@NotNull(message = "选择要下载的文件")@RequestParam(value = "fileId", required = false) Long fileId, HttpServletResponse response){
+        userFileService.download(fileId,UserIdUtil.get(),response);
     }
 }

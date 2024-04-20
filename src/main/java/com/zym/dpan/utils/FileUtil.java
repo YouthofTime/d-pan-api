@@ -6,14 +6,15 @@ import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.activation.MimetypesFileTypeMap;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import javax.servlet.ServletOutputStream;
+import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -44,7 +45,23 @@ public class FileUtil {
     private static final String EMPTY_STR = "";
     private static final String SLASH = "/";
 
+    /**
+     * 将文件写入到输出流中
+     * @param file
+     * @param outputStream
+     */
+    public static void writeFileToStream(File file, OutputStream outputStream) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(file);
+             FileChannel fileChannel = fileInputStream.getChannel();
+             WritableByteChannel writableByteChannel = Channels.newChannel(outputStream)) {
 
+            fileChannel.transferTo(0L, file.length(), writableByteChannel);
+
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
 
     /**
      * 将输入流写入文件中
@@ -56,16 +73,22 @@ public class FileUtil {
     public static void writeStreamToFile(InputStream inputStream, File targetFile,long totalSize) throws IOException {
         // 创建目标文件（包括其父目录）
         if(!targetFile.getParentFile().exists()){
-            boolean mkdirs = targetFile.getParentFile().mkdirs();
+            targetFile.getParentFile().mkdirs();
         }
-        boolean newFile = targetFile.createNewFile();
-        // 创建RandomAccessFile实例，从RandomAccessFile中获取文件通道（可读写文件通道）
-        RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile,"rw");
-        FileChannel fileChannel = randomAccessFile.getChannel();
-        // 从InputStream获取文件通道（只写通道）
-        ReadableByteChannel readableByteChannel = Channels.newChannel(inputStream);
-        // 使用transferFrom实现两个通道之间的数据交互（用的阻塞模式，不用处理非正常关闭的情况）
-        fileChannel.transferFrom(readableByteChannel,0L,totalSize);
+        targetFile.createNewFile();
+        try (// 创建RandomAccessFile实例，从RandomAccessFile中获取文件通道（可读写文件通道）
+                RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile, "rw");
+                FileChannel fileChannel = randomAccessFile.getChannel();
+             // 从InputStream获取文件通道（只读通道）
+             ReadableByteChannel readableByteChannel = Channels.newChannel(inputStream)) {
+            // 使用transferFrom实现两个通道之间的数据交互（用的阻塞模式，不用处理非正常关闭的情况）
+            fileChannel.transferFrom(readableByteChannel, 0L, totalSize);
+
+        } catch (IOException e) {
+            throw e;
+        }
+
+
     }
 
     /**
@@ -198,4 +221,53 @@ public class FileUtil {
         }
         return fileType;
     }
+
+    public static String getFileDirectory(String filePath){
+        // 指定文件路径
+        // 创建Path对象
+        Path path = Paths.get(filePath);
+        // 获取文件所在目录
+        Path directory = path.getParent();
+        String directoryPath = null;
+        if (directory != null) {
+            directoryPath = directory.toString();
+        }
+        return directoryPath;
+    }
+
+    /**
+     * 删除物理文件
+     *
+     * @param filePath
+     */
+    public static void delete(String filePath) throws IOException {
+        if (StringUtils.isBlank(filePath)) {
+            return;
+        }
+        delete0(new File(filePath));
+    }
+    /**
+     * 递归删除文件
+     *
+     * @param file
+     * @throws IOException
+     */
+    private static void delete0(File file) throws IOException {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            final File[] files = file.listFiles();
+            if (files != null && files.length > 0) {
+                for (int i = 0; i < files.length; i++) {
+                    delete0(files[i]);
+                }
+            }
+            Files.delete(file.toPath());
+        } else {
+            Files.delete(file.toPath());
+        }
+    }
+
+
 }

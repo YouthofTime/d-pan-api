@@ -1,6 +1,7 @@
 package com.zym.dpan.dao;
 
 import com.zym.dpan.entity.UserFileEntity;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,4 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository(value = "userFileDao")
 public interface UserFileDao{
     int insert(UserFileEntity userFileEntity);
+
+    UserFileEntity selectByFileIdAndUserId(@Param("fileId") Long fileId,@Param("fileId") Long userId);
 }

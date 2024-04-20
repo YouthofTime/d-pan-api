@@ -2,6 +2,8 @@ package com.zym.dpan.service;
 
 import com.zym.dpan.vo.FileSecUploadVo;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * ClassName: UserFileService
  * Package: com.zym.dpan.service
@@ -13,4 +15,6 @@ import com.zym.dpan.vo.FileSecUploadVo;
 public interface UserFileService {
 
     boolean secUpload(FileSecUploadVo fileSecUploadVo);
+
+    void download(Long fileId, Long userId, HttpServletResponse response);
 }

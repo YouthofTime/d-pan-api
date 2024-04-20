@@ -79,6 +79,7 @@ public class FileChunkServiceImpl implements FileChunkService {
         // 如果满足合并要求，添加缓存 userId和identifier作为key,suffix作为value
         if(uploadedChunkCount.equals(fileChunkUploadVo.getTotalChunks())){
             String chunkKey = RedisKeyGenerator.generateChunkKey(identifier,userId);
+            // TODO 分块上传缓存（每个都要,放在localStorage中添加）
             redisTemplate.opsForValue().set(chunkKey,suffix);
             mergeFlag = Constant.ChunkMergeFlagEnum.READY.getCode();
         }

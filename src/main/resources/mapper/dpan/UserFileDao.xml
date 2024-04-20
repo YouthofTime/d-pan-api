@@ -34,5 +34,15 @@
           #{createUser}, #{createTime}, #{updateUser},
           #{updateTime})
     </insert>
+    <select id="selectByFileIdAndUserId" resultMap="userFileMap">
+        select
+            <include refid="Base_Column_List"></include>
+        from
+            d_pan_user_file
+        where
+            fileId=#{fileId}
+        and
+            userId=#{userId}
+    </select>
 
 </mapper>

@@ -29,6 +29,14 @@
         where
             identifier= #{identifier}
     </select>
+    <select id="selectByPrimaryKey" resultType="com.zym.dpan.entity.FileEntity">
+        select
+            <include refid="Base_Column_List"></include>
+        from
+            d_pan_file
+        where
+            fileId=#{fileId}
+    </select>
 
     <insert id="insert" parameterType="com.zym.dpan.entity.FileEntity">
         insert into d_pan_file (file_id, filename, real_path,

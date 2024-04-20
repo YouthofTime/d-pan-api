@@ -16,4 +16,6 @@ public interface FileDao{
     FileEntity selectByIdentifier(String identifier);
 
     int insert(FileEntity fileEntity);
+
+    FileEntity selectByPrimaryKey(Long fileId);
 }
