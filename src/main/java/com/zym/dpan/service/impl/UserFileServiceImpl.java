@@ -1,5 +1,6 @@
 package com.zym.dpan.service.impl;
 import com.zym.dpan.constant.FileConstant;
+import com.zym.dpan.constant.UserFileConstant;
 import com.zym.dpan.constant.UserFileEnum;
 import com.zym.dpan.dao.FileDao;
 import com.zym.dpan.dao.UserFileDao;
@@ -10,17 +11,23 @@ import com.zym.dpan.service.FileService;
 import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.storage.StorageProcessorSelector;
 import com.zym.dpan.utils.FileTypeClassifier;
+import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.FileSecUploadVo;
+import com.zym.dpan.vo.FolderTreeNodeRespVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -94,6 +101,35 @@ public class UserFileServiceImpl implements UserFileService {
             e.printStackTrace();
             log.error("写入失败");
         }
+    }
+
+    @Override
+    public List<UserFileEntity> list(Long parentId) {
+        Integer delFlag = UserFileEnum.DEL_FLAG_FALSE.getCode();
+        Long userId = UserIdUtil.get();
+
+        return userFileDao.selectByParentId(parentId,delFlag,userId);
+    }
+
+    @Override
+    public List<FolderTreeNodeRespVo> getFolderTree() {
+        Long userId = UserIdUtil.get();
+        // 1.查询出当前用户下的所有文件
+        List<UserFileEntity> userFileEntityList = userFileDao.selectFolderListByUserId(userId,
+                UserFileEnum.DEL_FLAG_FALSE.getCode(),UserFileEnum.FOLDER_FLAG_TRUE.getCode());
+        List<FolderTreeNodeRespVo> folderTreeNodeList = userFileEntityList.stream().map(FolderTreeNodeRespVo::setFolderTreeNode)
+                .collect(Collectors.toList());
+        // 2.根据parentId进行分组
+        Map<Long, List<FolderTreeNodeRespVo>> treeNodeParentGroup = folderTreeNodeList.stream().collect(Collectors.groupingBy(FolderTreeNodeRespVo::getParentId));
+        // 3.设置每个节点的孩子节点
+        folderTreeNodeList.stream().forEach(node->{
+            List<FolderTreeNodeRespVo> children = treeNodeParentGroup.get(node.getId());
+            if(!CollectionUtils.isEmpty(children)){
+                node.setChildren(children);
+            }
+
+        });
+        return folderTreeNodeList.stream().filter(item->item.getParentId().equals(UserFileConstant.ROOT_PARENT_ID)).collect(Collectors.toList());
     }
 
     /**

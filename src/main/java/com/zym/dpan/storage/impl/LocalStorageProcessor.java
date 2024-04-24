@@ -3,6 +3,9 @@ package com.zym.dpan.storage.impl;
 import com.zym.dpan.entity.FileChunkEntity;
 import com.zym.dpan.storage.StorageProcessor;
 import com.zym.dpan.utils.FileUtil;
+import com.zym.dpan.utils.RedisKeyGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,12 +30,18 @@ import java.util.stream.Collectors;
 @Component(value = "localStorageProcessor")
 public class LocalStorageProcessor implements StorageProcessor {
 
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
     @Override
-    public String storeWitchChunk(InputStream inputStream, String identifier, Integer chunkNumber, Long chunkSize)throws IOException {
+    public String storeWitchChunk(InputStream inputStream, String identifier, Long userId,String suffix, Integer chunkNumber, Long chunkSize)throws IOException {
         // 生成分片绝对路径
         String chunkFilePath = FileUtil.generateChunkFilePath(identifier,chunkNumber);
         // 保存分片
         FileUtil.writeStreamToFile(inputStream,new File(chunkFilePath),chunkSize);
+        // 添加文件后缀到缓存中
+        String chunkKey = RedisKeyGenerator.generateChunkKey(identifier,userId);
+        redisTemplate.opsForValue().set(chunkKey,suffix);
         return chunkFilePath;
     }
 

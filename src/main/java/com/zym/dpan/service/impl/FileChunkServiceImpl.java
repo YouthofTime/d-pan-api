@@ -1,6 +1,5 @@
 package com.zym.dpan.service.impl;
 
-import com.zym.dpan.constant.FileConstant;
 import com.zym.dpan.dao.FileChunkDao;
 import com.zym.dpan.dao.UserFileDao;
 import com.zym.dpan.entity.FileChunkEntity;
@@ -64,7 +63,7 @@ public class FileChunkServiceImpl implements FileChunkService {
         String chunkFilePath="";
         // 1.执行分块上传
         try {
-            chunkFilePath = storageProcessorSelector.select().storeWitchChunk(file.getInputStream(), identifier, chunkNumber, chunkSize);
+            chunkFilePath = storageProcessorSelector.select().storeWitchChunk(file.getInputStream(), identifier, userId, suffix, chunkNumber, chunkSize);
         } catch (IOException e) {
             throw new RRException("上传文件失败");
         }
@@ -78,9 +77,6 @@ public class FileChunkServiceImpl implements FileChunkService {
         Integer mergeFlag = Constant.ChunkMergeFlagEnum.NOT_READY.getCode();
         // 如果满足合并要求，添加缓存 userId和identifier作为key,suffix作为value
         if(uploadedChunkCount.equals(fileChunkUploadVo.getTotalChunks())){
-            String chunkKey = RedisKeyGenerator.generateChunkKey(identifier,userId);
-            // TODO 分块上传缓存（每个都要,放在localStorage中添加）
-            redisTemplate.opsForValue().set(chunkKey,suffix);
             mergeFlag = Constant.ChunkMergeFlagEnum.READY.getCode();
         }
         return mergeFlag;

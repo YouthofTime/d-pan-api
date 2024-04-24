@@ -33,12 +33,12 @@ public class DpanControllerAdvice {
             String msg = item.getDefaultMessage();
             data.put(field,msg);
         });
-        return R.error(BizCodeEnum.VALID_EXCEPTION.getCode(),BizCodeEnum.VALID_EXCEPTION.getMsg()).put("data",data);
+        return R.fail(BizCodeEnum.VALID_EXCEPTION.getCode(),BizCodeEnum.VALID_EXCEPTION.getMsg(),data);
     }
 
     @ExceptionHandler(value = Throwable.class)
     public R handleException(Throwable t){
         log.error("发生未知异常：{}，异常类型：{}",t.getMessage(),t.getClass());
-        return R.error(BizCodeEnum.UNKNOW_EXCEPTION.getCode(),BizCodeEnum.UNKNOW_EXCEPTION.getMsg());
+        return R.fail(BizCodeEnum.UNKNOW_EXCEPTION.getCode(),BizCodeEnum.UNKNOW_EXCEPTION.getMsg());
     }
 }

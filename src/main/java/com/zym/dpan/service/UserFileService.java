@@ -1,8 +1,11 @@
 package com.zym.dpan.service;
 
+import com.zym.dpan.entity.UserFileEntity;
 import com.zym.dpan.vo.FileSecUploadVo;
+import com.zym.dpan.vo.FolderTreeNodeRespVo;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * ClassName: UserFileService
@@ -17,4 +20,8 @@ public interface UserFileService {
     boolean secUpload(FileSecUploadVo fileSecUploadVo);
 
     void download(Long fileId, Long userId, HttpServletResponse response);
+
+    List<UserFileEntity> list(Long parentId);
+
+    List<FolderTreeNodeRespVo> getFolderTree();
 }

@@ -16,7 +16,7 @@ import java.util.List;
  * @Version 1.0
  */
 public interface StorageProcessor {
-    String storeWitchChunk(InputStream inputStream, String identifier, Integer chunkNumber, Long chunkSize)throws IOException;
+    String storeWitchChunk(InputStream inputStream, String identifier,Long userId, String suffix, Integer chunkNumber, Long chunkSize)throws IOException;
 
     String storeMergeChunks(String suffix, List<FileChunkEntity> fileChunkEntities) throws IOException;
 

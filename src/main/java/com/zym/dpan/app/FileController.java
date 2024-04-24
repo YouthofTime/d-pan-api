@@ -1,5 +1,6 @@
 package com.zym.dpan.app;
 
+import com.zym.dpan.entity.UserFileEntity;
 import com.zym.dpan.service.FileChunkService;
 import com.zym.dpan.service.FileService;
 import com.zym.dpan.service.UserFileService;
@@ -8,6 +9,7 @@ import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.FileChunkMergeVo;
 import com.zym.dpan.vo.FileChunkUploadVo;
 import com.zym.dpan.vo.FileSecUploadVo;
+import com.zym.dpan.vo.FolderTreeNodeRespVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,36 +49,71 @@ public class FileController {
     @PostMapping("/sec-upload")
     public R secUpload(@Validated FileSecUploadVo fileSecUploadVo){
         if(userFileService.secUpload(fileSecUploadVo)){
-            return R.ok();
+            return R.success();
         }
-        return R.error("文件唯一标识不存在，请执行物理上传");
+        return R.fail("文件唯一标识不存在，请执行物理上传");
     }
 
     /**
-     * 分片上传
+     * 分片上传：查询已上传分片号
      * @param identifier
      * @return
      */
     @RequestMapping("/chunk-upload/{identifier}")
-    public R checkUploadWithChunk(@PathVariable("identifier") @Valid @NotBlank(message = "文件唯一标识不能为空") String identifier){
+    public R<List<Integer>> checkUploadWithChunk(@PathVariable("identifier") @Valid @NotBlank(message = "文件唯一标识不能为空") String identifier){
         List<Integer> uploadedChunks =  fileChunkService.getUploadedChunkNumbers(identifier, UserIdUtil.get());
-        return R.ok().data("uploadedChunks",uploadedChunks);
+        return R.data(uploadedChunks);
     }
 
+    /**
+     * 单个分片上传
+     * @param fileChunkUploadVo
+     * @return
+     */
     @PostMapping("/chunk-upload")
-    public R uploadWithChunk(@Validated FileChunkUploadVo fileChunkUploadVo){
+    public R<Integer> uploadWithChunk(@Validated FileChunkUploadVo fileChunkUploadVo){
         Integer mergeFlag = fileChunkService.saveWithChunk(fileChunkUploadVo);
-        return R.ok().data("mergeFlag",mergeFlag);
+        return R.data(mergeFlag);
     }
 
+    /**
+     * 合并分片
+     * @param fileChunkMergeVo
+     * @return
+     */
     @PostMapping("/merge")
     public R mergeWithChunks(@Validated FileChunkMergeVo fileChunkMergeVo){
         fileChunkService.mergeWithChunks(fileChunkMergeVo);
-        return R.ok().data();
+        return R.success();
     }
 
+    /**
+     * 下载文件单个
+     * @param fileId
+     * @param response
+     */
     @PostMapping("/download")
     public void download(@NotNull(message = "选择要下载的文件")@RequestParam(value = "fileId", required = false) Long fileId, HttpServletResponse response){
         userFileService.download(fileId,UserIdUtil.get(),response);
     }
+
+    /**
+     * 查询某个目录下的文件
+     * @param parentId
+     * @param fileTypes
+     * @return
+     */
+    @RequestMapping("/list")
+    public R<List<UserFileEntity>> list(@NotNull(message = "父id不能为空")@RequestParam(value = "parentId", required = false) Long parentId,
+                  @RequestParam(value = "fileTypes",required = false,defaultValue = "-1")String fileTypes){
+        List<UserFileEntity> data=userFileService.list(parentId);
+        return R.data(data);
+    }
+
+    @RequestMapping("/folder/tree")
+    public R getFolderTree(){
+        List<FolderTreeNodeRespVo> folderTreeNodeRespVos=userFileService.getFolderTree();
+        return R.success();
+    }
+
 }

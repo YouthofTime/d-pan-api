@@ -40,9 +40,33 @@
         from
             d_pan_user_file
         where
-            fileId=#{fileId}
+            file_id=#{fileId}
         and
-            userId=#{userId}
+            user_id=#{userId}
+    </select>
+    <select id="selectByParentId" resultMap="userFileMap">
+        select
+            <include refid="Base_Column_List"></include>
+        from
+            d_pan_user_file
+        where
+            parent_id = #{parentId}
+        and
+            del_flag = #{delFlag}
+        and
+            user_id = #{userId}
+    </select>
+    <select id="selectFolderListByUserId" resultType="com.zym.dpan.entity.UserFileEntity">
+        select
+            <include refid="Base_Column_List"></include>
+        from
+            d_pan_user_file
+        where
+            user_id = #{userId}
+        and
+            del_flag = #{delFlag}
+        and
+            folder_flag = #{folderFlag}
     </select>
 
 </mapper>

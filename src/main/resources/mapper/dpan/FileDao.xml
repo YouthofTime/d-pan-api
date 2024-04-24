@@ -35,7 +35,7 @@
         from
             d_pan_file
         where
-            fileId=#{fileId}
+            file_id=#{fileId}
     </select>
 
     <insert id="insert" parameterType="com.zym.dpan.entity.FileEntity">

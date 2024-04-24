@@ -4,8 +4,10 @@ package com.zym.dpan.utils;
 
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.http.HttpStatus;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,65 +20,76 @@ import java.util.Map;
  * @Create 2024/4/7 16:44
  * @Version 1.0
  */
-public class R extends HashMap<String,Object> {
-    public static final long serialVersionUID = 1;
+public class R<T> implements Serializable {
+    public static final long serialVersionUID = 1L;
 
-    public R(){
-        put("status",0);
-        put("message","success");
-        put("data",new HashMap<>());
+    private int status;
+    private String message;
+    private T data;
+
+    private R(int status) {
+        this.status = status;
     }
 
-    public static R error(int code,String msg){
-        R r = new R();
-        r.put("status",code);
-        r.put("message",msg);
-        return r;
+    private R(int status, String message) {
+        this.status = status;
+        this.message = message;
     }
 
-    public static R error(String msg){
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR,msg);
+    private R(int status, T data) {
+        this.status = status;
+        this.data = data;
     }
 
-    public static R error(){
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR,"未知异常，请联系管理员");
+    private R(int status, String message, T data) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
     }
 
-    public static R ok(Map<String,Object> map){
-        R r = new R();
-        r.putAll(map);
-        return r;
+    public static <T> R<T> success(){
+        return new R<T>(Constant.ResponseCode.SUCCESS.getCode(),Constant.ResponseCode.SUCCESS.getDesc());
     }
 
-    public static R ok(String msg){
-        R r = new R();
-        r.put("message",msg);
-        return r;
+    public static <T> R<T> success(String message){
+        return new R<T>(Constant.ResponseCode.SUCCESS.getCode(),message);
     }
 
-    public static R ok() {
-        return new R();
+    public static <T> R<T> success(String message,T data){
+        return new R<T>(Constant.ResponseCode.SUCCESS.getCode(),message,data);
+    }
+    public static <T> R<T> data(T data){
+        return new R<T>(Constant.ResponseCode.SUCCESS.getCode(),Constant.ResponseCode.SUCCESS.getDesc(),data);
     }
 
-    public R data(String key,Object value){
-        Map<String,Object> map = new HashMap<>();
-        map.put(key,value);
-        put("data",map);
-        return this;
+    public static <T> R<T> fail() {
+        return new R<T>(Constant.ResponseCode.ERROR.getCode(), Constant.ResponseCode.ERROR.getDesc());
     }
 
-    public R data(){
-        Map<String,Object> map = new HashMap<>();
-        put("data",map);
-        return this;
-    }
-    @Override
-    public R put(String key, Object value){
-        super.put(key,value);
-        return this;
+    public static <T> R<T> fail(String message) {
+        return new R<T>(Constant.ResponseCode.ERROR.getCode(), message);
     }
 
-    public Integer getCode(){return (Integer) this.get("status");}
+    public static <T> R<T> fail(int code, String message) {
+        return new R<T>(code, message);
+    }
+
+    public static <T> R<T> fail(int code, String message,T data) {
+        return new R<T>(code, message,data);
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
 
 
 
