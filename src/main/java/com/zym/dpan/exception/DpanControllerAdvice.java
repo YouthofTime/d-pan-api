@@ -38,7 +38,7 @@ public class DpanControllerAdvice {
 
     @ExceptionHandler(value = Throwable.class)
     public R handleException(Throwable t){
-        log.error("发生未知异常：{}，异常类型：{}",t.getMessage(),t.getClass());
+        log.error("发生未知异常：{}，异常类型：{}，异常信息：{}",t.getMessage(),t.getClass(),t.getStackTrace());
         return R.fail(BizCodeEnum.UNKNOW_EXCEPTION.getCode(),BizCodeEnum.UNKNOW_EXCEPTION.getMsg());
     }
 }

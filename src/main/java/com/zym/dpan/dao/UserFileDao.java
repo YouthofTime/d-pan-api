@@ -17,7 +17,7 @@ import java.util.List;
 public interface UserFileDao{
     int insert(UserFileEntity userFileEntity);
 
-    UserFileEntity selectByFileIdAndUserId(@Param("fileId") Long fileId,@Param("fileId") Long userId);
+    UserFileEntity selectByFileIdAndUserId(@Param("fileId") Long fileId,@Param("userId") Long userId);
 
     List<UserFileEntity> selectByParentId(@Param("parentId")Long parentId, @Param("delFlag") Integer delFlag,@Param("userId") Long userId);
 

@@ -1,5 +1,6 @@
 package com.zym.dpan.app;
 
+import com.zym.dpan.annotation.NeedLogin;
 import com.zym.dpan.entity.UserFileEntity;
 import com.zym.dpan.service.FileChunkService;
 import com.zym.dpan.service.FileService;
@@ -7,13 +8,14 @@ import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.utils.R;
 import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.*;
+import com.zym.dpan.vo.resp.FileChunkCheckRespVo;
+import com.zym.dpan.vo.resp.FileChunkUploadRespVo;
+import com.zym.dpan.vo.resp.FolderTreeNodeRespVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -44,6 +46,7 @@ public class FileController {
      * @return
      */
     @PostMapping("/sec-upload")
+    @NeedLogin
     public R secUpload(@RequestBody @Validated FileSecUploadVo fileSecUploadVo){
         if(userFileService.secUpload(fileSecUploadVo)){
             return R.success();
@@ -56,9 +59,12 @@ public class FileController {
      * @return
      */
     @GetMapping("/chunk-upload")
-    public R<List<Integer>> checkUploadWithChunk(@Validated FileChunkCheckVo fileChunkCheckVo){
+    @NeedLogin
+    public R<FileChunkCheckRespVo> checkUploadWithChunk(@Validated FileChunkCheckVo fileChunkCheckVo){
         List<Integer> uploadedChunks =  fileChunkService.getUploadedChunkNumbers(fileChunkCheckVo.getIdentifier(), UserIdUtil.get());
-        return R.data(uploadedChunks);
+        FileChunkCheckRespVo fileChunkCheckRespVo = new FileChunkCheckRespVo();
+        fileChunkCheckRespVo.setUploadedChunks(uploadedChunks);
+        return R.data(fileChunkCheckRespVo);
     }
 
     /**
@@ -67,9 +73,12 @@ public class FileController {
      * @return
      */
     @PostMapping("/chunk-upload")
-    public R<Integer> uploadWithChunk(@Validated FileChunkUploadVo fileChunkUploadVo){
+    @NeedLogin
+    public R<FileChunkUploadRespVo> uploadWithChunk(@Validated FileChunkUploadVo fileChunkUploadVo){
         Integer mergeFlag = fileChunkService.saveWithChunk(fileChunkUploadVo);
-        return R.data(mergeFlag);
+        FileChunkUploadRespVo fileChunkUploadRespVo = new FileChunkUploadRespVo();
+        fileChunkUploadRespVo.setMergeFlag(mergeFlag);
+        return R.data(fileChunkUploadRespVo);
     }
 
     /**
@@ -78,7 +87,8 @@ public class FileController {
      * @return
      */
     @PostMapping("/merge")
-    public R mergeWithChunks(@Validated FileChunkMergeVo fileChunkMergeVo){
+    @NeedLogin
+    public R mergeWithChunks(@Validated @RequestBody FileChunkMergeVo fileChunkMergeVo){
         fileChunkService.mergeWithChunks(fileChunkMergeVo);
         return R.success();
     }
@@ -88,7 +98,8 @@ public class FileController {
      * @param fileId
      * @param response
      */
-    @PostMapping("/download")
+    @GetMapping("/download")
+    @NeedLogin
     public void download(@NotNull(message = "选择要下载的文件")@RequestParam(value = "fileId", required = false) Long fileId, HttpServletResponse response){
         userFileService.download(fileId,UserIdUtil.get(),response);
     }
@@ -100,6 +111,7 @@ public class FileController {
      * @return
      */
     @RequestMapping("/list")
+    @NeedLogin
     public R<List<UserFileEntity>> list(@NotNull(message = "父id不能为空")@RequestParam(value = "parentId", required = false) Long parentId,
                   @RequestParam(value = "fileTypes",required = false,defaultValue = "-1")String fileTypes){
         List<UserFileEntity> data=userFileService.list(parentId);
@@ -107,6 +119,7 @@ public class FileController {
     }
 
     @RequestMapping("/folder/tree")
+    @NeedLogin
     public R getFolderTree(){
         List<FolderTreeNodeRespVo> folderTreeNodeRespVos=userFileService.getFolderTree();
         return R.success();

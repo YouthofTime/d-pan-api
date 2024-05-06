@@ -1,10 +1,9 @@
-package com.zym.dpan.vo;
+package com.zym.dpan.vo.resp;
 
 import com.zym.dpan.entity.UserFileEntity;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

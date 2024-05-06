@@ -13,7 +13,7 @@ import com.zym.dpan.storage.StorageProcessorSelector;
 import com.zym.dpan.utils.FileTypeClassifier;
 import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.FileSecUploadVo;
-import com.zym.dpan.vo.FolderTreeNodeRespVo;
+import com.zym.dpan.vo.resp.FolderTreeNodeRespVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +86,6 @@ public class UserFileServiceImpl implements UserFileService {
         }
         // 查询出真实路径和文件名字
         FileEntity fileEntity = fileDao.selectByPrimaryKey(userFileEntity.getRealFileId());
-
         // 添加响应头
         try {
             addResponseHeader(response,userFileEntity.getFilename());

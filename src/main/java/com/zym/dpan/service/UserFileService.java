@@ -2,7 +2,7 @@ package com.zym.dpan.service;
 
 import com.zym.dpan.entity.UserFileEntity;
 import com.zym.dpan.vo.FileSecUploadVo;
-import com.zym.dpan.vo.FolderTreeNodeRespVo;
+import com.zym.dpan.vo.resp.FolderTreeNodeRespVo;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;

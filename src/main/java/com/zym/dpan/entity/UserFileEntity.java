@@ -4,6 +4,8 @@ package com.zym.dpan.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.zym.dpan.constant.UserFileEnum;
 import com.zym.dpan.utils.IdGenerator;
 import com.zym.dpan.utils.UserIdUtil;
@@ -23,6 +25,7 @@ public class UserFileEntity implements Serializable {
 	/**
 	 * 文件记录ID
 	 */
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long fileId;
 	/**
 	 * 用户ID
