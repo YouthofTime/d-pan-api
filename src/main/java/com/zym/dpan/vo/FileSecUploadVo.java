@@ -16,12 +16,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class FileSecUploadVo {
 
-    @NotBlank(message = "文件名称不能为空")
+//    @NotBlank(message = "文件名称不能为空")
     private String filename;
 
-    @NotBlank(message = "文件唯一标识不能为空")
+//    @NotBlank(message = "文件唯一标识不能为空")
     private String identifier;
 
-    @NotNull(message = "父id不能为空")
+//    @NotNull(message = "父id不能为空")
     private Long parentId;
 }

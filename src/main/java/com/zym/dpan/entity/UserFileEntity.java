@@ -75,14 +75,16 @@ public class UserFileEntity implements Serializable {
 
 	public UserFileEntity(){
 		Long userId = UserIdUtil.get();
-		this.setCreateTime(new Date());
-		this.setUpdateTime(new Date());
-		this.setUserId(userId);
-		this.setCreateUser(userId);
-		this.setUpdateUser(userId);
-		this.setFolderFlag(UserFileEnum.FOLDER_FLAG_FASE.getCode());
-		this.setFileId(IdGenerator.nextId());
-		this.setDelFlag(UserFileEnum.DEL_FLAG_FALSE.getCode());
-		this.setFileType(UserFileEnum.FILE_TYPE_NONE.getCode());
+		fileId=IdGenerator.nextId();
+		this.userId = userId;
+		realFileId=0L;
+		folderFlag = UserFileEnum.FOLDER_FLAG_FASE.getCode();
+		fileSizeDesc="--";
+		fileType = UserFileEnum.FILE_TYPE_NONE.getCode();
+		delFlag = UserFileEnum.DEL_FLAG_FALSE.getCode();
+		createUser = userId;
+		updateUser = userId;
+		createTime=new Date();
+		updateTime=new Date();
 	}
 }

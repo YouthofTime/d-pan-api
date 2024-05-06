@@ -9,6 +9,7 @@ package com.zym.dpan.constant;
  * @Version 1.0
  */
 public class FileConstant {
+    public static final String ALL_FILE_CN_STR = "全部文件";
     public enum FileType {
         // 文件类型
         NORMAL(1, "普通文件"),

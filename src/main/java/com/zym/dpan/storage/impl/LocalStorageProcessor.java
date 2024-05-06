@@ -2,6 +2,7 @@ package com.zym.dpan.storage.impl;
 
 import com.zym.dpan.entity.FileChunkEntity;
 import com.zym.dpan.storage.StorageProcessor;
+import com.zym.dpan.storage.config.LocalStorageConfig;
 import com.zym.dpan.utils.FileUtil;
 import com.zym.dpan.utils.RedisKeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,20 @@ import java.util.stream.Collectors;
 public class LocalStorageProcessor implements StorageProcessor {
 
     @Autowired
-    StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private LocalStorageConfig localStorageConfig;
 
     @Override
     public String storeWitchChunk(InputStream inputStream, String identifier, Long userId,String suffix, Integer chunkNumber, Long chunkSize)throws IOException {
         // 生成分片绝对路径
-        String chunkFilePath = FileUtil.generateChunkFilePath(identifier,chunkNumber);
+        String chunkFilePath = FileUtil.generateChunkFilePath(localStorageConfig.getTempPath(),identifier,chunkNumber);
         // 保存分片
         FileUtil.writeStreamToFile(inputStream,new File(chunkFilePath),chunkSize);
         // 添加文件后缀到缓存中
         String chunkKey = RedisKeyGenerator.generateChunkKey(identifier,userId);
-        redisTemplate.opsForValue().set(chunkKey,suffix);
+        stringRedisTemplate.opsForValue().set(chunkKey,suffix);
         return chunkFilePath;
     }
 
@@ -51,7 +55,7 @@ public class LocalStorageProcessor implements StorageProcessor {
             return null;
         }
         // 创建合并后的文件
-        String mergeFilePath = FileUtil.generateMergeFilePath(suffix);
+        String mergeFilePath = FileUtil.generateMergeFilePath(localStorageConfig.getRootFilePath(),suffix);
         FileUtil.createFile(mergeFilePath);
         // 对分片按照分片号进行排序
         List<FileChunkEntity> sortedFileChunkEntities = fileChunkEntities.stream()

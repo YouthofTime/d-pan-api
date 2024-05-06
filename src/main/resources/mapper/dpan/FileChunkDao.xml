@@ -44,7 +44,7 @@
             COUNT(DISTINCT chunk_number)
         from
             d_pan_file_chunk
-        where identifier= #{identifier} AND creat_user=#{userId}
+        where identifier= #{identifier} AND create_user=#{userId}
     </select>
 
     <delete id="deleteByIdentifierAndUserId">

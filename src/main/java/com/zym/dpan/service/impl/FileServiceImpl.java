@@ -35,7 +35,7 @@ public class FileServiceImpl implements FileService {
     @Autowired
     StorageProcessorSelector storageProcessorSelector;
     @Autowired
-    StringRedisTemplate redisTemplate;
+    StringRedisTemplate stringRedisTemplate;
     @Override
     public FileEntity selectByIdentifier(String identifier) {
         return fileDao.selectByIdentifier(identifier);
@@ -50,7 +50,7 @@ public class FileServiceImpl implements FileService {
         String identifier = fileChunkMergeVo.getIdentifier();
         Long userId = UserIdUtil.get();
         String chunkKey = RedisKeyGenerator.generateChunkKey(identifier,userId);
-        String suffix = redisTemplate.opsForValue().get(chunkKey);
+        String suffix = stringRedisTemplate.opsForValue().get(chunkKey);
         // 查询出所有分片
         List<FileChunkEntity> fileChunkEntities = fileChunkDao.selectAllByIdentifier(identifier, userId);
         String mergeFilePath = "";
@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService {
         // 删除分片信息
         fileChunkDao.deleteByIdentifierAndUserId(identifier,userId);
         // 删除缓存
-        redisTemplate.delete(chunkKey);
+        stringRedisTemplate.delete(chunkKey);
         // 2.保存文件信息
         FileEntity fileEntity = new FileEntity();
         fileEntity.setRealPath(mergeFilePath);

@@ -6,10 +6,7 @@ import com.zym.dpan.service.FileService;
 import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.utils.R;
 import com.zym.dpan.utils.UserIdUtil;
-import com.zym.dpan.vo.FileChunkMergeVo;
-import com.zym.dpan.vo.FileChunkUploadVo;
-import com.zym.dpan.vo.FileSecUploadVo;
-import com.zym.dpan.vo.FolderTreeNodeRespVo;
+import com.zym.dpan.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +44,7 @@ public class FileController {
      * @return
      */
     @PostMapping("/sec-upload")
-    public R secUpload(@Validated FileSecUploadVo fileSecUploadVo){
+    public R secUpload(@RequestBody @Validated FileSecUploadVo fileSecUploadVo){
         if(userFileService.secUpload(fileSecUploadVo)){
             return R.success();
         }
@@ -56,12 +53,11 @@ public class FileController {
 
     /**
      * 分片上传：查询已上传分片号
-     * @param identifier
      * @return
      */
-    @RequestMapping("/chunk-upload/{identifier}")
-    public R<List<Integer>> checkUploadWithChunk(@PathVariable("identifier") @Valid @NotBlank(message = "文件唯一标识不能为空") String identifier){
-        List<Integer> uploadedChunks =  fileChunkService.getUploadedChunkNumbers(identifier, UserIdUtil.get());
+    @GetMapping("/chunk-upload")
+    public R<List<Integer>> checkUploadWithChunk(@Validated FileChunkCheckVo fileChunkCheckVo){
+        List<Integer> uploadedChunks =  fileChunkService.getUploadedChunkNumbers(fileChunkCheckVo.getIdentifier(), UserIdUtil.get());
         return R.data(uploadedChunks);
     }
 

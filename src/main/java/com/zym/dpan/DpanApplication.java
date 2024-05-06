@@ -3,10 +3,12 @@ package com.zym.dpan;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
+
+@MapperScan({"com.zym.dpan.dao","com.zym.dpan.user.dao"})
 @SpringBootApplication
-@MapperScan("com.zym.dpan.dao")
+@ServletComponentScan("com.zym.dpan.filter")
 public class DpanApplication {
 
 	public static void main(String[] args) {

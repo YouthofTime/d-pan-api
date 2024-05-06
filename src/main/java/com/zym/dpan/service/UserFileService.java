@@ -24,4 +24,8 @@ public interface UserFileService {
     List<UserFileEntity> list(Long parentId);
 
     List<FolderTreeNodeRespVo> getFolderTree();
+
+    UserFileEntity getUserTopFileInfo(Long userId);
+
+    void createFolder(Long parentId, String folderName, Long userId);
 }

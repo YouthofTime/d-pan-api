@@ -1,8 +1,10 @@
 package com.zym.dpan.utils;
 
+import com.zym.dpan.storage.config.LocalStorageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.tika.Tika;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -28,11 +30,6 @@ import java.util.UUID;
  */
 public class FileUtil {
 
-
-    @Value("${dpan.storage.local.rootFilePath}")
-    public static String rootFilePath;
-    @Value("${dpan.storage.local.tempPath}")
-    public static String tempPath;
     private static final String KB_STR = "K";
     private static final String MB_STR = "M";
     private static final String GB_STR = "G";
@@ -108,7 +105,7 @@ public class FileUtil {
      * 临时分片文件存放目录
      * @return
      */
-    public static String generateChunksFolderPath(){
+    public static String generateChunksFolderPath(String tempPath){
         return tempPath + File.separator + CHUNKS_FOLDER_NAME;
     }
 
@@ -118,9 +115,9 @@ public class FileUtil {
      * @param chunkNumber
      * @return
      */
-    public static String generateChunkFilePath(String identifier,Integer chunkNumber){
+    public static String generateChunkFilePath(String tempPath,String identifier,Integer chunkNumber){
         LocalDate currentDate = LocalDate.now();
-        return new StringBuilder(generateChunksFolderPath())
+        return new StringBuilder(generateChunksFolderPath(tempPath))
                 .append(File.separator)
                 .append(currentDate.getYear())
                 .append(File.separator)
@@ -133,7 +130,7 @@ public class FileUtil {
                 .toString();
     }
 
-    public static String generateMergeFilePath(String suffix){
+    public static String generateMergeFilePath(String rootFilePath,String suffix){
         LocalDate currentDate = LocalDate.now();
         return new StringBuilder(rootFilePath)
                 .append(File.separator)

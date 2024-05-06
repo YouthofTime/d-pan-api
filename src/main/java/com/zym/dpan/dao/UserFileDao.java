@@ -22,4 +22,6 @@ public interface UserFileDao{
     List<UserFileEntity> selectByParentId(@Param("parentId")Long parentId, @Param("delFlag") Integer delFlag,@Param("userId") Long userId);
 
     List<UserFileEntity> selectFolderListByUserId(@Param("userId") Long userId, @Param("delFlag") Integer delFlag,@Param("folderFlag") Integer folderFlag);
+
+    UserFileEntity selectTopFolderByUserId(@Param("userId") Long userId);
 }

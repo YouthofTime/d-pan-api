@@ -7,6 +7,7 @@ import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MediaTypeRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 public class DpanApplicationTests {
 
+	@Value("${dpan.storage.local.tempPath}")
+	public String tempPath;
 	@Test
 	public void contextLoads() {
 	}
@@ -58,4 +61,8 @@ public class DpanApplicationTests {
 
 	}
 
+	@Test
+	public void getTemp(){
+		System.out.println(tempPath);
+	}
 }

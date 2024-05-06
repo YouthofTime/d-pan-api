@@ -133,6 +133,27 @@ public class UserFileServiceImpl implements UserFileService {
     }
 
     /**
+     * 获取用户的顶级文件信息
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public UserFileEntity getUserTopFileInfo(Long userId) {
+        return userFileDao.selectTopFolderByUserId(userId);
+    }
+
+    @Override
+    public void createFolder(Long parentId, String folderName, Long userId) {
+        UserFileEntity userFileEntity = new UserFileEntity();
+        userFileEntity.setFolderFlag(UserFileEnum.FOLDER_FLAG_TRUE.getCode());
+        userFileEntity.setParentId(UserFileConstant.ROOT_PARENT_ID);
+        userFileEntity.setFilename(folderName);
+        userFileEntity.setUserId(userId);
+        userFileDao.insert(userFileEntity);
+    }
+
+    /**
      * 添加响应头
      * @param response
      * @param filename
