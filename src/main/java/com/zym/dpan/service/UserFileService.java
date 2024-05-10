@@ -2,6 +2,7 @@ package com.zym.dpan.service;
 
 import com.zym.dpan.entity.UserFileEntity;
 import com.zym.dpan.vo.FileSecUploadVo;
+import com.zym.dpan.vo.resp.BreadCrumbsRespVo;
 import com.zym.dpan.vo.resp.FolderTreeNodeRespVo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,4 +29,6 @@ public interface UserFileService {
     UserFileEntity getUserTopFileInfo(Long userId);
 
     void createFolder(Long parentId, String folderName, Long userId);
+
+    List<BreadCrumbsRespVo> getBreadCrumbs(Long fileId);
 }

@@ -56,7 +56,7 @@
         and
             user_id = #{userId}
     </select>
-    <select id="selectFolderListByUserId" resultType="com.zym.dpan.entity.UserFileEntity">
+    <select id="selectFolderListByUserId" resultMap="userFileMap">
         select
             <include refid="Base_Column_List"></include>
         from

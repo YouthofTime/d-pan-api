@@ -2,11 +2,14 @@ package com.zym.dpan;
 
 
 
+import com.zym.dpan.dao.UserFileDao;
+import com.zym.dpan.entity.UserFileEntity;
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MediaTypeRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,11 +18,14 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DpanApplicationTests {
 
+	@Autowired
+	private UserFileDao userFileDao;
 	@Value("${dpan.storage.local.tempPath}")
 	public String tempPath;
 	@Test
@@ -65,4 +71,13 @@ public class DpanApplicationTests {
 	public void getTemp(){
 		System.out.println(tempPath);
 	}
+
+	@Test
+	public void getFolder(){
+		List<UserFileEntity> userFileEntityList = userFileDao.selectFolderListByUserId(1787407670827810816L, 0, 1);
+		for(UserFileEntity userFileEntity:userFileEntityList){
+			System.out.println(userFileEntity);
+		}
+	}
+
 }

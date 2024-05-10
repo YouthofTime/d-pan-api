@@ -1,4 +1,5 @@
 package com.zym.dpan.service.impl;
+import com.google.common.collect.Lists;
 import com.zym.dpan.constant.FileConstant;
 import com.zym.dpan.constant.UserFileConstant;
 import com.zym.dpan.constant.UserFileEnum;
@@ -13,6 +14,7 @@ import com.zym.dpan.storage.StorageProcessorSelector;
 import com.zym.dpan.utils.FileTypeClassifier;
 import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.FileSecUploadVo;
+import com.zym.dpan.vo.resp.BreadCrumbsRespVo;
 import com.zym.dpan.vo.resp.FolderTreeNodeRespVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,8 +27,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -113,7 +114,7 @@ public class UserFileServiceImpl implements UserFileService {
     @Override
     public List<FolderTreeNodeRespVo> getFolderTree() {
         Long userId = UserIdUtil.get();
-        // 1.查询出当前用户下的所有文件
+        // 1.查询出当前用户下的所有文件夹
         List<UserFileEntity> userFileEntityList = userFileDao.selectFolderListByUserId(userId,
                 UserFileEnum.DEL_FLAG_FALSE.getCode(),UserFileEnum.FOLDER_FLAG_TRUE.getCode());
         List<FolderTreeNodeRespVo> folderTreeNodeList = userFileEntityList.stream().map(FolderTreeNodeRespVo::setFolderTreeNode)
@@ -146,10 +147,29 @@ public class UserFileServiceImpl implements UserFileService {
     public void createFolder(Long parentId, String folderName, Long userId) {
         UserFileEntity userFileEntity = new UserFileEntity();
         userFileEntity.setFolderFlag(UserFileEnum.FOLDER_FLAG_TRUE.getCode());
-        userFileEntity.setParentId(UserFileConstant.ROOT_PARENT_ID);
+        userFileEntity.setParentId(parentId);
         userFileEntity.setFilename(folderName);
         userFileEntity.setUserId(userId);
         userFileDao.insert(userFileEntity);
+    }
+
+    @Override
+    public List<BreadCrumbsRespVo> getBreadCrumbs(Long fileId) {
+        List<UserFileEntity> userFileEntityList = userFileDao.selectFolderListByUserId(UserIdUtil.get(), UserFileEnum.DEL_FLAG_FALSE.getCode(), UserFileEnum.FOLDER_FLAG_TRUE.getCode());
+        if(CollectionUtils.isEmpty(userFileEntityList)){
+            return Lists.newArrayList();
+        }
+        // 创建map映射，id和BreadCrumbsRespVo对应
+        Map<Long, BreadCrumbsRespVo> breadCrumbsMap = userFileEntityList.stream().collect(Collectors.toMap(UserFileEntity::getFileId, BreadCrumbsRespVo::setBreadCrumb));
+        // 获取面包屑当前层级
+        BreadCrumbsRespVo thisLevel = breadCrumbsMap.get(fileId);
+        // 获取面包屑整个层级（栈的方式）
+        LinkedList<BreadCrumbsRespVo> breadCrumbsList = new LinkedList<>();
+        do{
+            breadCrumbsList.addFirst(thisLevel);
+            thisLevel = breadCrumbsMap.get(thisLevel.getParentId());
+        }while (thisLevel!=null);
+        return breadCrumbsList;
     }
 
     /**

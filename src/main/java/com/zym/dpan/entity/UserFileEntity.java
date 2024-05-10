@@ -25,7 +25,7 @@ public class UserFileEntity implements Serializable {
 	/**
 	 * 文件记录ID
 	 */
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using=ToStringSerializer.class)
 	private Long fileId;
 	/**
 	 * 用户ID
@@ -90,4 +90,5 @@ public class UserFileEntity implements Serializable {
 		createTime=new Date();
 		updateTime=new Date();
 	}
+
 }

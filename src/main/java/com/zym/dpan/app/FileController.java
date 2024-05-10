@@ -8,6 +8,7 @@ import com.zym.dpan.service.UserFileService;
 import com.zym.dpan.utils.R;
 import com.zym.dpan.utils.UserIdUtil;
 import com.zym.dpan.vo.*;
+import com.zym.dpan.vo.resp.BreadCrumbsRespVo;
 import com.zym.dpan.vo.resp.FileChunkCheckRespVo;
 import com.zym.dpan.vo.resp.FileChunkUploadRespVo;
 import com.zym.dpan.vo.resp.FolderTreeNodeRespVo;
@@ -114,15 +115,28 @@ public class FileController {
     @NeedLogin
     public R<List<UserFileEntity>> list(@NotNull(message = "父id不能为空")@RequestParam(value = "parentId", required = false) Long parentId,
                   @RequestParam(value = "fileTypes",required = false,defaultValue = "-1")String fileTypes){
-        List<UserFileEntity> data=userFileService.list(parentId);
-        return R.data(data);
+        List<UserFileEntity> list=userFileService.list(parentId);
+        return R.data(list);
     }
 
     @RequestMapping("/folder/tree")
     @NeedLogin
-    public R getFolderTree(){
-        List<FolderTreeNodeRespVo> folderTreeNodeRespVos=userFileService.getFolderTree();
+    public R<List<FolderTreeNodeRespVo>> getFolderTree(){
+        List<FolderTreeNodeRespVo> folderTreeNodes=userFileService.getFolderTree();
+        return R.data(folderTreeNodes);
+    }
+
+    @PostMapping("/folder")
+    @NeedLogin
+    public R createFolder(@Validated @RequestBody FolderCreateVO folderCreateVO){
+        userFileService.createFolder(folderCreateVO.getParentId(),folderCreateVO.getFolderName(),UserIdUtil.get());
         return R.success();
     }
 
+    @RequestMapping("/breadcrumbs")
+    @NeedLogin
+    public R<List<BreadCrumbsRespVo>> getBreadCrumbs(@NotNull(message = "文件id不能为空") @RequestParam(value = "fileId", required = false)Long fileId){
+        List<BreadCrumbsRespVo> breadCrumbs = userFileService.getBreadCrumbs(fileId);
+        return R.data(breadCrumbs);
+    }
 }

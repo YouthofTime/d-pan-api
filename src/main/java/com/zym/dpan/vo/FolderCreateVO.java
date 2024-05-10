@@ -6,21 +6,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * ClassName: FileSecUploadVo
+ * ClassName: FolderCreateVO
  * Package: com.zym.dpan.vo
  *
  * @Author zym
- * @Create 2024/4/7 18:25
+ * @Create 2024/5/10 13:56
  * @Version 1.0
  */
 @Data
-public class FileSecUploadVo {
+public class FolderCreateVO {
 
-    @NotBlank(message = "文件名称不能为空")
-    private String filename;
-
-    @NotBlank(message = "文件唯一标识不能为空")
-    private String identifier;
+    @NotBlank(message = "文件夹名称不能为空")
+    private String folderName;
 
     @NotNull(message = "父id不能为空")
     private Long parentId;
